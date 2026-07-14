@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     firms_map_key: str = ""  # only needed if the backend itself pulls fresh FIRMS data
 
     # CORS — the frontend's origin(s), comma-separated
-    cors_origins: str = "https://stormsentinel-frontend-dun.vercel.app"
+    cors_origins: str = "https://stormsentinel-frontend.vercel.app"
     class Config:
         env_file = ".env"
 
