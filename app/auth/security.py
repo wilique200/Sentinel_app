@@ -1,8 +1,3 @@
-# ============================================================================
-# StormSentinel Backend — Auth Security Utilities
-# Password hashing (bcrypt via passlib) and JWT creation/verification.
-# ============================================================================
-
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -14,18 +9,16 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
-    """Hash password with bcrypt. Truncates to 72 bytes (bcrypt hard limit)."""
-    # Bcrypt has a maximum password length of 72 bytes
-    # We truncate to avoid ValueError on Render (and some environments)
-    password_bytes = password.encode('utf-8')
+    """Hash password safely — bcrypt only supports up to 72 bytes."""
+    # Truncate to 72 bytes (standard practice)
+    password_bytes = password.encode("utf-8")
     if len(password_bytes) > 72:
-        password = password_bytes[:72].decode('utf-8', errors='ignore')
+        password = password_bytes[:72].decode("utf-8", errors="ignore")
     
     return pwd_context.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify password against hash."""
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -36,7 +29,6 @@ def create_access_token(user_id: int) -> str:
 
 
 def decode_access_token(token: str) -> int | None:
-    """Returns the user_id encoded in the token, or None if invalid/expired."""
     try:
         payload = jwt.decode(
             token, 
