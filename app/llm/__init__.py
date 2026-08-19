@@ -1,4 +1,4 @@
-# This package will hold the LLM assistant module — provider-swappable
-# (Gemini primary, Groq fallback), grounded on real PredictionSnapshot data.
-# Built after the prediction endpoint exists, since the assistant needs real
-# predictions to ground on.
+from app.llm.assistant import generate_reply
+from app.llm.notifier import compose_notification_body
+
+__all__ = ["generate_reply", "compose_notification_body"]
