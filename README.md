@@ -1,8 +1,8 @@
 # StormSentinel AI — Backend
 
 FastAPI backend for StormSentinel v2. Wraps the trained 7-head multi-task
-PyTorch model, handles auth, and (in progress) will serve predictions,
-saved locations, and an LLM-grounded assistant.
+PyTorch model, handles auth, and serves predictions, saved locations, an
+LLM-grounded chat assistant, and risk-change email notifications.
 
 ## Structure
 
@@ -14,16 +14,23 @@ app/
 ├── models/                # SQLAlchemy ORM models (users, locations, predictions, chat)
 ├── schemas/                # Pydantic request/response schemas
 ├── auth/                    # Password hashing, JWT, get_current_user dependency
-├── routers/                  # API route handlers (auth done; predictions/locations/chat next)
-├── ml/                         # [next] Model architecture + feature engineering + geocoding
-└── llm/                         # [next] Gemini-based assistant, grounded on real predictions
+├── routers/                  # API route handlers — auth, predictions, chat, locations, cron
+├── ml/                         # Model architecture + feature engineering + geocoding
+├── llm/                         # Gemini-based chat assistant + notification composer
+└── notifications/                # Resend email sending
 ```
 
 ## Status
 
-**Done:** database schema, auth (signup/login/JWT), app skeleton.
-**Next:** `/predict` endpoint (ports the validated v2 inference logic),
-saved locations CRUD, chat assistant.
+**Done:** database schema, auth (signup/login/JWT), `/predict` + `/geocode`,
+chat assistant (`/predictions/{id}/chat`), saved locations CRUD plus
+history (`/locations`, `/locations/{id}/history`), and the periodic
+recheck + email notification pipeline (`/internal/recheck`).
+
+**Not built by this backend:** the actual scheduler that calls
+`/internal/recheck` on an interval. Point any free external cron (e.g.
+cron-job.org) at that endpoint with the `X-Cron-Secret` header set to your
+`CRON_SECRET` value.
 
 ## Setup
 
@@ -35,7 +42,8 @@ cp .env.example .env   # fill in real values
 You'll need:
 - A free Postgres database — [Supabase](https://supabase.com), [Railway](https://railway.app), or [Neon](https://neon.tech) all have free tiers
 - A free Gemini API key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — no credit card required
-- A random JWT secret: `python -c "import secrets; print(secrets.token_hex(32))"`
+- A free Resend API key from [resend.com](https://resend.com) if you want email notifications — no credit card required, but sending to real recipients needs a verified domain (see `.env.example`)
+- A random JWT secret and cron secret: `python -c "import secrets; print(secrets.token_hex(32))"` (run twice, once for each)
 
 ## Run locally
 
@@ -49,8 +57,8 @@ without a frontend.
 
 ## Model artifacts
 
-Once the `/predict` endpoint is built, this directory will also need the 4
-files produced by the training pipeline, copied in alongside `app/`:
+The `/predict` endpoint needs the 4 files produced by the training
+pipeline, copied in alongside `app/`:
 - `stormsentinel_model_v2.pt`
 - `feature_scaler_v2.pkl`
 - `feature_columns_v2.json`

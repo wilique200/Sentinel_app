@@ -1,8 +1,6 @@
 # ── Web framework ────────────────────────────────────────────────────────
 fastapi==0.115.0
-bcrypt>=4.0.0
 uvicorn[standard]==0.32.0
-gunicorn==22.0.0
 python-multipart==0.0.12    # required for OAuth2PasswordRequestForm
 
 # ── Database ─────────────────────────────────────────────────────────────
@@ -27,4 +25,13 @@ joblib==1.4.2
 requests==2.32.3
 
 # ── LLM assistant — free tier, not Anthropic/OpenAI (no paid API access) ─
-google-generativeai==0.8.3
+# google-generativeai is the deprecated legacy package — do not reintroduce it.
+# Current SDK is google-genai (`from google import genai`).
+google-genai==2.18.1
+
+# ── Email notifications — Resend (free tier: 3,000/mo, 100/day, no card) ──
+# Sent via plain REST calls with `requests` (already a dependency above),
+# so no extra SDK is needed.
+
+# ── Scheduling support (used by the /internal/recheck endpoint's caller,
+# not by the backend itself — see README for the external free-cron setup) ─
