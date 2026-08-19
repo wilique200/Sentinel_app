@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.database import engine, Base
-from app.routers import auth, predictions
+from app.routers import auth, predictions, chat, locations, cron
 
 settings = get_settings()
 
@@ -31,6 +31,9 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(predictions.router)
+app.include_router(chat.router)
+app.include_router(locations.router)
+app.include_router(cron.router)
 
 
 @app.get("/")
