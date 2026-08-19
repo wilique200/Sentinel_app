@@ -12,8 +12,8 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 
 # ── Validation / settings ───────────────────────────────────────────────
-pydantic==2.9.2
-pydantic-settings==2.5.2
+pydantic>=2.12.5
+pydantic-settings>=2.5.2
 email-validator==2.2.0      # required for Pydantic EmailStr
 
 # ── ML / inference (ported from the Streamlit app) ─────────────────────
