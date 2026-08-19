@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # LLM — free tier (Gemini), not a paid API
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3.7-flash"
 
     # External APIs (no keys needed — Open-Meteo, NOAA, FIRMS are free/public)
     firms_map_key: str = ""  # only needed if the backend itself pulls fresh FIRMS data
